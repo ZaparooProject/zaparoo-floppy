@@ -17,10 +17,10 @@ The M4 (or RP2040) microcontroller interfaces the the FeatherWing to connect a 3
 
 <sup>\** Many 3.5 only require a 5v supply (the documentation suggests at least 2amps). Check you floppy pinnout to see what your drive requires. You can use a 4-pin AT / ATX / IDE Molex to Berg Floppy Drive Power Cable (adafruit as sells [one](https://www.adafruit.com/product/425)) that you can use to plug into a apporpriate supply or use to solder you own barrel connectors.</sup>
 
-##Quick Start(For M)
+## Quick Start(For M)
 After you've soldered your boards, connect the microcontroller to your computer while holding the bootsel button (you should see a new drive connected). Download the latest .uf2 from the releases page and copy it to the microcontroller drive. Now that your board's firmware is flashed, you can connect everything to your system via the usb of your microcontroller.
 
-##Developer Setup (Windows)
+## Developer Setup (Windows)
 If you want to compile from source instead
 1. Download and install the Ardunio IDE.
 2. Follow the instructions to add your board to the IDE (For the M4, see this [page](https://learn.adafruit.com/adafruit-feather-m4-express-atsamd51/setup) and this [page](https://learn.adafruit.com/adafruit-feather-m4-express-atsamd51/using-with-arduino-ide)).
