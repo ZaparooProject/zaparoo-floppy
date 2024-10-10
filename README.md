@@ -8,7 +8,7 @@ The M4 (or RP2040) microcontroller interfaces the the FeatherWing to connect a 3
 1. Adafruit Floppy FeatherWing ([Buy](https://www.adafruit.com/product/5679) or [Build](https://github.com/adafruit/Adafruit_Floppy_FeatherWing_PCB)).
 2. Adafruit Feather M4 Express ([Buy](https://www.adafruit.com/product/3857)) or a RP2040*
 3. Floppy Drive (Tested using a Sony mpf920)
-4. Ribbon 34 Pin Floppy Ribbon Connector
+4. 34 Pin Floppy Ribbon Connector
 5. A power supply for the floppy drive**
 6. (Optional). It is easier to use a cheap Another way to write floppy disks (Cheap usb drives should be more than enough)
 7. (Optional) Female pin headers to easily connector the two boards. You can source these c.heaply on alliexpress (or if using an Adafruit Feather Board, they sell the [correct size headers](https://www.adafruit.com/product/2940) but they are more expensive).
