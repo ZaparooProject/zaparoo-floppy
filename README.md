@@ -18,7 +18,7 @@ A microcontroller interfaces with the FeatherWing to connect a 34 pin floppy dri
 <sup>\** Many 3.5 only require a 5v supply (the documentation suggests at least 2amps). Check you floppy pinnout to see what your drive requires. You can use a 4-pin AT / ATX / IDE Molex to Berg Floppy Drive Power Cable (adafruit as sells [one](https://www.adafruit.com/product/425)) that you can use to plug into a apporpriate supply or use to solder you own barrel connectors.</sup>
 
 ## Quick Start (For M4 Feather Express)
-After you've soldered your boards, connect the microcontroller to your computer while holding the bootsel button (you should see a new drive connected). Download the latest .uf2 from the releases page and copy it to the microcontroller drive. Now that your board's firmware is flashed, you can connect everything to your system via the usb of your microcontroller. Configure TapTo to use [https://tapto.wiki/Reader_Drivers#Simple_Serial](SimpleSerial).
+After you've soldered your boards, connect the microcontroller to your computer and enter boolsel mode (on the M4, double click reset) (you should see a new drive connected). Download the latest .uf2 from the releases page and copy it to the microcontroller drive. Now that your board's firmware is flashed, you can connect everything to your system via the usb of your microcontroller. Configure TapTo to use [https://tapto.wiki/Reader_Drivers#Simple_Serial](SimpleSerial) and insert a write-protected disk to launch a game.
 
 ## Developer Setup (Windows)
 If you want to compile from source instead of the prebuilt firmware.
