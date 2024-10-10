@@ -1,4 +1,4 @@
-# tapto-floppy
+# Tapto-floppy
 A ardunio based project to launch games on the [TapTo](https://tapto.wiki/Main_Page) platform via the contents of a floppy disc using the Adafruit Floppy FeatherWing.
 
 ## How It Works
