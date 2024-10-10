@@ -10,7 +10,7 @@ The M4 (or RP2040) microcontroller interfaces the the FeatherWing to connect a 3
 3. Floppy Drive (Tested using a Sony mpf920)
 4. Ribbon 34 Pin Floppy Ribbon Connector
 5. A power supply for the floppy drive**
-6. Another way to write floppy disks (Cheap usb drives should be more than enough)
+6. (Optional). It is easier to use a cheap Another way to write floppy disks (Cheap usb drives should be more than enough)
 7. (Optional) Female pin headers to easily connector the two boards. You can source these c.heaply on alliexpress (or if using an Adafruit Feather Board, they sell the [correct size headers](https://www.adafruit.com/product/2940) but they are more expensive).
 
 \* During testing, a [Adafruit Feather RP2040](https://www.adafruit.com/product/4884) was used. The exists some hardware bug that allows the Feather Wing to backpower the RP2040. As a result, if the floppy drive is powered before the microcontroller, the RP2040 will enter boot_sel mode. Due to this flaw, only M4 firmwares will be distributed.
@@ -20,8 +20,14 @@ The M4 (or RP2040) microcontroller interfaces the the FeatherWing to connect a 3
 ##Quick Start(For M)
 After you've soldered your boards, connect the microcontroller to your computer while holding the bootsel button (you should see a new drive connected). Download the latest .uf2 from the releases page and copy it to the microcontroller drive. Now that your board's firmware is flashed, you can connect everything to your system via the usb of your microcontroller.
 
-##Developer Setup
+##Developer Setup (Windows)
 If you want to compile from source instead
 1. Download and install the Ardunio IDE.
 2. Follow the instructions to add your board to the IDE (For the M4, see this [page](https://learn.adafruit.com/adafruit-feather-m4-express-atsamd51/setup) and this [page](https://learn.adafruit.com/adafruit-feather-m4-express-atsamd51/using-with-arduino-ide)).
-3. Install the "Adafruit_Floppy" library from the Library Maanger. Install any of its dependencies.
+3. Install the "Adafruit_Floppy" library from the Library Maanger and install any of its dependencies.
+4. Select your board model to flash and select the com port.
+5. Change the USB Stack to "TinyUSB"
+6. Update your board settings to the recommened values in the [Adafruit_Floppy](https://github.com/adafruit/Adafruit_Floppy) libary page.
+   -RP2040: "Overclock to 200MHz and select -O3 optimization for best performance"
+   -M4: "Overclock to 180MHz, select Fastest optimization"
+7. Compile and upload the firmware.
