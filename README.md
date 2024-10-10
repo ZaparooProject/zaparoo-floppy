@@ -2,7 +2,7 @@
 A ardunio based project to launch games on the [TapTo](https://tapto.wiki/Main_Page) platform via the contents of a floppy disc using the Adafruit Floppy FeatherWing.
 
 ## How It Works
-The M4 (or RP2040) microcontroller interfaces the the FeatherWing to connect a 34 pin floppy drive. The supporting libaries allow the controller to read the discs from any 3.5 or 5.25 IBM PC compatible FAT floppy disc (so pretty much any 90s floppy drive will work). When a write-protected disc is inserted into the drive, the controller will look at the root of the disk for a file called "tapto.txt". The contents of this file are the same as the text in a stanard TapTo nfc tag (See [TapScript](https://tapto.wiki/TapScript)). Until another disk is inserted, the motor of the drive will not spin.
+A microcontroller interfaces with the FeatherWing to connect a 34 pin floppy drive. The supporting libaries allow the controller to read from any 3.5 or 5.25 IBM PC compatible FAT floppy disk (so pretty much any 90s floppy drive will work). When a write-protected disc is inserted into the drive, the controller will look at the root of the disk for a file called "tapto.txt". The contents of this file are the same as the text in a stanard TapTo nfc tag (See [TapScript](https://tapto.wiki/TapScript)). Until another disk is inserted, the motor of the drive will not spin.
 
 ## Required Hardware
 1. Adafruit Floppy FeatherWing ([Buy](https://www.adafruit.com/product/5679) or [Build](https://github.com/adafruit/Adafruit_Floppy_FeatherWing_PCB)).
