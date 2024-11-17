@@ -1,7 +1,7 @@
 #include <SPI.h>
 #include <SdFat.h>
 #include <Adafruit_Floppy.h>
-#include "TapToFloppy.hpp"
+#include "ZaparooFloppy.hpp"
 
 #if defined(ADAFRUIT_FEATHER_M4_EXPRESS)
 #define DENSITY_PIN A1 // IDC 2
@@ -113,7 +113,7 @@ void parseTapTo(){
     file.getName(name, length);
     String filename = String(name);
     file.close();
-    if(filename.equalsIgnoreCase("tapto.txt")){
+    if(filename.equalsIgnoreCase("tapto.txt") || filename.equalsIgnoreCase("zaparoo.txt")){
       File32 dataFile = fatfs.open(filename, FILE_READ);
       while (dataFile.available()) {
         char c = dataFile.read();
