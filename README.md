@@ -1,8 +1,11 @@
 # Zaparoo Floppy Serial Interface
-A ardunio based project to launch games on the [Zaparoo](https://tapto.wiki/Main_Page) platform via the contents of a floppy disc using the Adafruit Floppy FeatherWing.
+A ardunio based project to launch games on the [Zaparoo](https://wiki.zaparoo.org/Main_Page) platform via the contents of a floppy disc using the Adafruit Floppy FeatherWing.
 
 ## How It Works
-A microcontroller interfaces with the FeatherWing to connect a 34 pin floppy drive. The supporting libaries allow the controller to read from any 3.5 or 5.25 IBM PC compatible FAT floppy disk (so pretty much any 90s floppy drive will work). When a write-protected disc is inserted into the drive, the controller will look at the root of the disk for a file called "zaparoo.txt". The contents of this file are the same as the text in a standard Zaparoo nfc tag (See [TapScript](https://tapto.wiki/TapScript)). Until another disk is inserted, the motor of the drive will not spin.
+A microcontroller interfaces with the FeatherWing to connect a 34 pin floppy drive. The supporting libaries allow the controller to read from any 3.5 or 5.25 IBM PC compatible FAT floppy disk (so pretty much any 90s floppy drive will work). When a write-protected disc is inserted into the drive, the controller will look at the root of the disk for a file called "zaparoo.txt". The contents of this file are the same as the text in a standard Zaparoo nfc tag (See [TapScript](https://wiki.zaparoo.org/TapScript)). Until another disk is inserted, the motor of the drive will not spin.
+
+## Why Only Write Protected Disks?
+The floppy drive bus does not have a dedicated pin that triggers when a disk is inserted. Other singals like the "READY" and "DISK CHANGE" only change when a new disk is inserted and the motor spins up. Polling those signals would cause the drive to constantly spin, adding additional wear and tear on the device. "WRITE PROTECT" is active only when a protected disk is in the drive and it will change when removed, allowing for motor free detection.
 
 ## Required Hardware
 1. Adafruit Floppy FeatherWing ([Buy](https://www.adafruit.com/product/5679) or [Build](https://github.com/adafruit/Adafruit_Floppy_FeatherWing_PCB)).
@@ -18,7 +21,7 @@ A microcontroller interfaces with the FeatherWing to connect a 34 pin floppy dri
 <sup>\** Many 3.5 only require a 5v supply (the documentation suggests at least 2amps). Check you floppy pinnout to see what your drive requires. You can use a 4-pin AT / ATX / IDE Molex to Berg Floppy Drive Power Cable (adafruit as sells [one](https://www.adafruit.com/product/425)) that you can use to plug into a apporpriate supply or use to solder you own barrel connectors.</sup>
 
 ## Quick Start (For M4 Feather Express)
-After you've soldered your boards, connect the microcontroller to your computer and enter boolsel mode (on the M4, double click reset) (you should see a new drive connected). Download the latest .uf2 from the releases page and copy it to the microcontroller drive. Now that your board's firmware is flashed, you can connect everything to your system via the usb of your microcontroller. Configure Zaparoo to use [https://tapto.wiki/Reader_Drivers#Simple_Serial](SimpleSerial) and insert a write-protected disk to launch a game.
+After you've soldered your boards, connect the microcontroller to your computer and enter boolsel mode (on the M4, double click reset) (you should see a new drive connected). Download the latest .uf2 from the releases page and copy it to the microcontroller drive. Now that your board's firmware is flashed, you can connect everything to your system via the usb of your microcontroller. Configure Zaparoo to use [Simple Serial](https://wiki.zaparoo.org/Reader_Drivers#Simple_Serial) and insert a write-protected disk to launch a game.
 
 ## Developer Setup (Windows)
 If you want to compile from source instead of the prebuilt firmware.
