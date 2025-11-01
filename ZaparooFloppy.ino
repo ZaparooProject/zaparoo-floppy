@@ -79,7 +79,7 @@ void setup() {
 }
 
 void loop() {
-  bool inserted = floppy.get_write_protect();
+  bool inserted = floppy.get_write_protect() == WRITE_FLAG;
   if(newDisk && inserted){
     floppy.spin_motor(true);
     fatfs.begin(&mfm_floppy);
