@@ -2,10 +2,10 @@
 A ardunio based project to launch games on the [Zaparoo](https://wiki.zaparoo.org/Main_Page) platform via the contents of a floppy disc using the Adafruit Floppy FeatherWing.
 
 ## How It Works
-A microcontroller interfaces with the FeatherWing to connect a 34 pin floppy drive. The supporting libaries allow the controller to read from any 3.5 or 5.25 IBM PC compatible FAT floppy disk (so pretty much any 90s floppy drive will work). When a write-protected disc is inserted into the drive, the controller will look at the root of the disk for a file called "zaparoo.txt". The contents of this file are the same as the text in a standard Zaparoo nfc tag (See [ZapScript](https://wiki.zaparoo.org/ZapScript)). Until another disk is inserted, the motor of the drive will not spin.
+A microcontroller interfaces with the FeatherWing to connect a 34 pin floppy drive. The supporting libaries allow the controller to read from any 3.5 or 5.25 IBM PC compatible FAT floppy disk (so pretty much any 90s floppy drive will work). When a disc is inserted into the drive, the controller will look at the root of the disk for a file called "zaparoo.txt". The contents of this file are the same as the text in a standard Zaparoo nfc tag (See [ZapScript](https://wiki.zaparoo.org/ZapScript)). Until another disk is inserted, the motor of the drive will not spin.
 
-## Why Only Write Protected Disks?
-The floppy drive bus does not have a dedicated pin that triggers when a disk is inserted. Other singals like the "READY" and "DISK CHANGE" only change when a new disk is inserted and the motor spins up. Polling those signals would cause the drive to constantly spin, adding additional wear and tear on the device. "WRITE PROTECT" is active only when a protected disk is in the drive and it will change when removed, allowing for motor free detection.
+## Why Poll Using Write Protection?
+The floppy drive bus does not have a dedicated pin that triggers when a disk is inserted. Other singals like the "READY" and "DISK CHANGE" only change when a new disk is inserted and the motor spins up. Polling those signals would cause the drive to constantly spin, adding additional wear and tear on the device. "WRITE PROTECT" is active only when a protected disk is in the drive and it will change when removed, allowing for motor free detection. Some drives will always return "write protected" true if no disk is inserted, other will aways return false. For this purpose, you can set the WRITE_FLAG value to which ever you drive expects (set to 1 your drive reports false by default, 0 if it reports true). As a result, your disk must be set to the opposite of the default value (ie if your drive reports false, your disk needs to be set to write-protected).
 
 ## Required Hardware
 1. Adafruit Floppy FeatherWing ([Buy](https://www.adafruit.com/product/5679) or [Build](https://github.com/adafruit/Adafruit_Floppy_FeatherWing_PCB)).
@@ -27,7 +27,7 @@ After you've soldered your boards, connect the microcontroller to your computer 
 If you want to compile from source instead of the prebuilt firmware.
 1. Download and install the Ardunio IDE.
 2. Follow the instructions to add your board to the IDE (For the M4, see this [page](https://learn.adafruit.com/adafruit-feather-m4-express-atsamd51/setup) and this [page](https://learn.adafruit.com/adafruit-feather-m4-express-atsamd51/using-with-arduino-ide)).
-3. Install the "Adafruit_Floppy" library from the Library Maanger and install any of its dependencies.
+3. Install the "Adafruit_Floppy" library from the Library Maanger and install any of its dependencies. As of now, version 0.3.0 has been confirmed working. "Failed to open root" issues occurred on later versions.
 4. Select your board model to flash and select the com port.
 5. Change the USB Stack to "TinyUSB"
 6. Update your board settings to the recommened values in the [Adafruit_Floppy](https://github.com/adafruit/Adafruit_Floppy) libary page.
