@@ -59,14 +59,13 @@ Adafruit_Floppy floppy(DENSITY_PIN, INDEX_PIN, SELECT_PIN,
                        MOTOR_PIN, DIR_PIN, STEP_PIN,
                        WRDATA_PIN, WRGATE_PIN, TRK0_PIN,
                        PROT_PIN, READ_PIN, SIDE_PIN, READY_PIN);
-Adafruit_MFM_Floppy mfm_floppy(&floppy);
+Adafruit_MFM_Floppy mfm_floppy(&floppy, DEFAULT_DISK_FORMAT);
 
 FatVolume fatfs;
 
 File32 root;
 File32 file;
 bool newDisk = true;
-bool inserted = true;
 String lastCommand = "";
 
 void setup() {
@@ -74,7 +73,9 @@ void setup() {
   while (!Serial) {
     yield();
   }
-  inserted = mfm_floppy.begin();
+  //mfm_floppy.setDebug(true);
+  mfm_floppy.begin();
+  mfm_floppy.inserted(DEFAULT_DISK_FORMAT);
   floppy.spin_motor(false);
 }
 
@@ -85,10 +86,16 @@ void loop() {
     fatfs.begin(&mfm_floppy);
     newDisk = false;
     bool couldReadDisk = root.open("/");
+    if(!couldReadDisk){
+      fatfs.end();
+      mfm_floppy.inserted(AUTODETECT);
+      fatfs.begin(&mfm_floppy);
+      couldReadDisk = root.open("/");
+    }
      if (!couldReadDisk) {
       Serial.println("open root failed, check disk");
     }else{
-      parseTapTo();
+      parseZaparoo();
       root.close();
     }
     fatfs.end();
@@ -105,7 +112,7 @@ void loop() {
   delay(200);
 }
 
-void parseTapTo(){
+void parseZaparoo(){
   lastCommand = "";
   while (file.openNext(&root, O_RDONLY)) {
     int length = 25;
