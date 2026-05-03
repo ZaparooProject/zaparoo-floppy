@@ -27,7 +27,7 @@ After you've soldered your boards, connect the microcontroller to your computer 
 If you want to compile from source instead of the prebuilt firmware.
 1. Download and install the Ardunio IDE.
 2. Follow the instructions to add your board to the IDE (For the M4, see this [page](https://learn.adafruit.com/adafruit-feather-m4-express-atsamd51/setup) and this [page](https://learn.adafruit.com/adafruit-feather-m4-express-atsamd51/using-with-arduino-ide)).
-3. Install the "Adafruit_Floppy" library from the Library Maanger and install any of its dependencies. As of now, version 0.3.0 has been confirmed working. "Failed to open root" issues occurred on later versions.
+3. Install the libraries from the "libraries" folder in the project. It uses a modifed version of the adafruit floppy library.
 4. Select your board model to flash and select the com port.
 5. Change the USB Stack to "TinyUSB"
 6. Update your board settings to the recommened values in the [Adafruit_Floppy](https://github.com/adafruit/Adafruit_Floppy) libary page.
