@@ -92,7 +92,7 @@ void loop() {
       fatfs.begin(&mfm_floppy);
       couldReadDisk = root.open("/");
     }
-     if (!couldReadDisk) {
+    if (!couldReadDisk) {
       Serial.println("open root failed, check disk");
     }else{
       parseZaparoo();
@@ -105,28 +105,35 @@ void loop() {
     newDisk = true;
     lastCommand = "";
   }
-  if(!lastCommand.equals("")){
+  if(lastCommand.length()){
     Serial.print(lastCommand);
     Serial.flush();
   }
   delay(200);
 }
 
-void parseZaparoo(){
+void parseZaparoo() {
   lastCommand = "";
   while (file.openNext(&root, O_RDONLY)) {
-    int length = 25;
-    char name[length];
-    file.getName(name, length);
-    String filename = String(name);
+    char name[25];
+    file.getName(name, 25);
+    String filename(name);
     file.close();
-    if(filename.equalsIgnoreCase("tapto.txt") || filename.equalsIgnoreCase("zaparoo.txt")){
+    if (filename.equalsIgnoreCase("tapto.txt") || filename.equalsIgnoreCase("zaparoo.txt")) {
       File32 dataFile = fatfs.open(filename, FILE_READ);
+      lastCommand.reserve(dataFile.size() + 10); 
+      lastCommand = "SCAN\t";
+      char buffer[128];
       while (dataFile.available()) {
-        char c = dataFile.read();
-        lastCommand += c;
+        int bytesRead = dataFile.read(buffer, sizeof(buffer));
+        if (bytesRead > 0) {
+          for (int i = 0; i < bytesRead; i++) {
+            lastCommand += buffer[i];
+          }
+        }
       }
-      lastCommand = "SCAN\t" + lastCommand + "\n";
+      dataFile.close();
+      lastCommand += "\n";
       return;
     }
   }
