@@ -67,21 +67,65 @@ File32 root;
 File32 file;
 bool newDisk = true;
 String lastCommand = "";
+volatile bool readyPinChanged = false;
+volatile int lastReadyState = HIGH;
+volatile bool indexInterruptEnabled = true;
+volatile bool indexTriggered = false;
+volatile bool waitingForReadyAfterStep = false;
+enum SystemState { WAITING_FOR_INDEX, WAITING_FOR_READY };
+volatile SystemState currentState = WAITING_FOR_INDEX;
+
+void readyPinTrigger() {
+  int currentReadyState = digitalRead(READY_PIN);
+  if (currentReadyState != lastReadyState) {
+    readyPinChanged = true;
+    lastReadyState = currentReadyState;
+    if (waitingForReadyAfterStep) {
+      waitingForReadyAfterStep = false;
+      currentState = WAITING_FOR_INDEX;
+      indexInterruptEnabled = true;
+      indexTriggered = false;
+    }
+  }
+}
+
+void indexPinTrigger() {
+  if (indexInterruptEnabled && !indexTriggered && currentState == WAITING_FOR_INDEX) {
+    indexTriggered = true;
+    indexInterruptEnabled = false;
+    currentState = WAITING_FOR_READY;
+    waitingForReadyAfterStep = true;
+    floppy.step(true, 1);
+  }
+}
 
 void setup() {
   Serial.begin(115200);
   while (!Serial) {
     yield();
   }
-  //mfm_floppy.setDebug(true);
   mfm_floppy.begin();
   mfm_floppy.inserted(DEFAULT_DISK_FORMAT);
+  
+#if USE_INDEX_POLLING
+  lastReadyState = digitalRead(READY_PIN);
+  attachInterrupt(digitalPinToInterrupt(READY_PIN), readyPinTrigger, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(INDEX_PIN), indexPinTrigger, RISING);
+#else
   floppy.spin_motor(false);
+#endif
 }
 
 void loop() {
+#if USE_INDEX_POLLING
+  bool inserted = lastReadyState == HIGH;
+#else
   bool inserted = floppy.get_write_protect() == WRITE_FLAG;
+#endif
   if(newDisk && inserted){
+  #if RE_DETECT
+    mfm_floppy.inserted(AUTODETECT);
+  #endif
     floppy.spin_motor(true);
     fatfs.begin(&mfm_floppy);
     newDisk = false;
@@ -105,6 +149,21 @@ void loop() {
     newDisk = true;
     lastCommand = "";
   }
+  
+#if USE_INDEX_POLLING
+  if(readyPinChanged){
+    readyPinChanged = false;
+    if(lastReadyState == HIGH){
+      floppy.spin_motor(false);
+    }else{
+      floppy.spin_motor(true);
+    }
+  }
+  if(indexTriggered){
+    indexTriggered = false;
+  }
+#endif
+  
   if(lastCommand.length()){
     Serial.print(lastCommand);
     Serial.flush();
