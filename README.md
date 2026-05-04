@@ -4,8 +4,16 @@ A ardunio based project to launch games on the [Zaparoo](https://wiki.zaparoo.or
 ## How It Works
 A microcontroller interfaces with the FeatherWing to connect a 34 pin floppy drive. The supporting libaries allow the controller to read from any 3.5 or 5.25 IBM PC compatible FAT floppy disk (so pretty much any 90s floppy drive will work). When a disc is inserted into the drive, the controller will look at the root of the disk for a file called "zaparoo.txt". The contents of this file are the same as the text in a standard Zaparoo nfc tag (See [ZapScript](https://wiki.zaparoo.org/ZapScript)). Until another disk is inserted, the motor of the drive will not spin.
 
-## Firware Versions
+## M4 Firmware Versions
 
+| Filename                                           | Redetect on Insert | Polling Type               |  
+|----------------------------------------------------|--------------------|----------------------------|
+| firmware_no_redetect_index_polling.bin             | No                 | Index                      |
+| firmware_no_redetect_write_polling.bin             | No                 | Write Protect              |
+| firmware_no_redetect_write_polling_inverse.bin     | No                 | Write Protect (Inverse)    |
+| firmware_redetect_index_polling.bin                | Yes                | Index                      |
+| firmware_redetect_write_polling.bin                | Yes                | Write Protect              |
+| firmware_redetect_write_polling_inverse.bin        | Yes                | Write Protect (Invverse)   |
 
 
 ## Why Poll Using Write Protection?
@@ -15,6 +23,9 @@ The floppy drive bus does not have a dedicated pin that triggers when a disk is 
 ## Why Poll Using Index Pulse?
 The floppy interface doesn’t provide a true “disk inserted” signal on its own. Signals like "READY" and "DISK CHANGE" only become valid after the drive has spun up and the controller has interacted with the media. Using the "INDEX" pulse works because it’s always generated when a disk is actually spinning. By asserting the motor signal and watching for index pulses, you can confirm that a disk is present. On many drives, the motor won’t spin at all if no disk is inserted, so you avoid unnecessary movement while still getting a reliable indication. Once the disk is spinning and index pulses are detected, stepping the head will properly update the "DISK CHANGE" signal. The "DISK CHANGE" signal will not change until the disk is ejected, allowing the mottor to spin down.
 The main advantage of this method is faster detection, since the motor will spin sooner. The trade-off is potential wear if the motor doesn't shutdown if a disk is eject. In all drives,  there is an additional amount of head movement to refresh the "DISK CHANGE" state after a index pulse is detected.
+
+# What is Redetect on Insert?
+This setting controllers whether or not the drive will attempt to detect the floppy disk format on every insert, or if it will assume the disk is the same format as the last. The tradeoffs are speed. Redecticing the format each insert adds about 400ms to each insert, but is consitent between 720kb and 1.44mb disks. Without this enabled, inserting a different different formatted disk will take about an extra 2.5 seconds to load.
 
 ## Required Hardware
 1. Adafruit Floppy FeatherWing ([Buy](https://www.adafruit.com/product/5679) or [Build](https://github.com/adafruit/Adafruit_Floppy_FeatherWing_PCB)).
