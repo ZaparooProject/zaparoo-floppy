@@ -4,8 +4,17 @@ A ardunio based project to launch games on the [Zaparoo](https://wiki.zaparoo.or
 ## How It Works
 A microcontroller interfaces with the FeatherWing to connect a 34 pin floppy drive. The supporting libaries allow the controller to read from any 3.5 or 5.25 IBM PC compatible FAT floppy disk (so pretty much any 90s floppy drive will work). When a disc is inserted into the drive, the controller will look at the root of the disk for a file called "zaparoo.txt". The contents of this file are the same as the text in a standard Zaparoo nfc tag (See [ZapScript](https://wiki.zaparoo.org/ZapScript)). Until another disk is inserted, the motor of the drive will not spin.
 
+## Firware Versions
+
+
+
 ## Why Poll Using Write Protection?
-The floppy drive bus does not have a dedicated pin that triggers when a disk is inserted. Other singals like the "READY" and "DISK CHANGE" only change when a new disk is inserted and the motor spins up. Polling those signals would cause the drive to constantly spin, adding additional wear and tear on the device. "WRITE PROTECT" is active only when a protected disk is in the drive and it will change when removed, allowing for motor free detection. Some drives will always return "write protected" true if no disk is inserted, other will aways return false. For this purpose, you can set the WRITE_FLAG value to which ever you drive expects (set to 1 your drive reports false by default, 0 if it reports true). As a result, your disk must be set to the opposite of the default value (ie if your drive reports false, your disk needs to be set to write-protected).
+The floppy drive bus does not have a dedicated pin that triggers when a disk is inserted. Other singals like the "READY" and "DISK CHANGE" only change when a new disk is inserted and the motor spins up. Polling those signals could cause the drive to constantly spin, adding additional wear and tear on the device. "WRITE PROTECT" is active only when a protected disk is in the drive and it will change when removed, allowing for motor free detection. Some drives will always return "write protected" true if no disk is inserted, other will aways return false. For this purpose, you can set the WRITE_FLAG value to which ever you drive expects (set to 1 your drive reports false by default, 0 if it reports true). As a result, your disk must be set to the opposite of the default value (ie if your drive reports false, your disk needs to be set to write-protected).
+
+
+## Why Poll Using Index Pulse?
+The floppy interface doesn’t provide a true “disk inserted” signal on its own. Signals like "READY" and "DISK CHANGE" only become valid after the drive has spun up and the controller has interacted with the media. Using the "INDEX" pulse works because it’s always generated when a disk is actually spinning. By asserting the motor signal and watching for index pulses, you can confirm that a disk is present. On many drives, the motor won’t spin at all if no disk is inserted, so you avoid unnecessary movement while still getting a reliable indication. Once the disk is spinning and index pulses are detected, stepping the head will properly update the "DISK CHANGE" signal. The "DISK CHANGE" signal will not change until the disk is ejected, allowing the mottor to spin down.
+The main advantage of this method is faster detection, since the motor will spin sooner. The trade-off is potential wear if the motor doesn't shutdown if a disk is eject. In all drives,  there is an additional amount of head movement to refresh the "DISK CHANGE" state after a index pulse is detected.
 
 ## Required Hardware
 1. Adafruit Floppy FeatherWing ([Buy](https://www.adafruit.com/product/5679) or [Build](https://github.com/adafruit/Adafruit_Floppy_FeatherWing_PCB)).
@@ -23,14 +32,11 @@ The floppy drive bus does not have a dedicated pin that triggers when a disk is 
 ## Quick Start (For M4 Feather Express)
 After you've soldered your boards, connect the microcontroller to your computer and enter boolsel mode (on the M4, double click reset) (you should see a new drive connected). Download the latest .uf2 from the releases page and copy it to the microcontroller drive. Now that your board's firmware is flashed, you can connect everything to your system via the usb of your microcontroller. Configure Zaparoo to use [Simple Serial](https://wiki.zaparoo.org/Reader_Drivers#Simple_Serial) and insert a write-protected disk to launch a game.
 
-## Developer Setup (Windows)
+## Developer Setup (Test on Windows)
 If you want to compile from source instead of the prebuilt firmware.
-1. Download and install the Ardunio IDE.
-2. Follow the instructions to add your board to the IDE (For the M4, see this [page](https://learn.adafruit.com/adafruit-feather-m4-express-atsamd51/setup) and this [page](https://learn.adafruit.com/adafruit-feather-m4-express-atsamd51/using-with-arduino-ide)).
-3. Install the libraries from the "libraries" folder in the project. It uses a modifed version of the adafruit floppy library.
-4. Select your board model to flash and select the com port.
-5. Change the USB Stack to "TinyUSB"
-6. Update your board settings to the recommened values in the [Adafruit_Floppy](https://github.com/adafruit/Adafruit_Floppy) libary page.
-   -RP2040: "Overclock to 200MHz and select -O3 optimization for best performance"
-   -M4: "Overclock to 180MHz, select Fastest optimization"
-7. Compile and upload the firmware.
+1. Download and install Visual Studio Code
+2. Install the [Platformio Extension](https://platformio.org/)
+3. Open the project folder within Visual Studio Code.
+4. Once the project loads, use the bottom bar to switch to your preferred environment configuration. Without changing this platforio will build and upload every environment on the next step. 
+5. Build and upload the firmware (buttons are also found on the bottom bar).
+6. Open a serial terminal to view the output.
