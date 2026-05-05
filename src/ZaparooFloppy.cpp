@@ -11,6 +11,8 @@ void readyPinTrigger();
 void indexPinTrigger();
 void readDisk();
 void parseZaparoo();
+void indexPoll();
+bool getInserted();
 
 Adafruit_Floppy floppy(DENSITY_PIN, INDEX_PIN, SELECT_PIN, MOTOR_PIN, DIR_PIN, STEP_PIN, WRDATA_PIN, WRGATE_PIN,
                        TRK0_PIN, PROT_PIN, READ_PIN, SIDE_PIN, READY_PIN);
@@ -78,17 +80,30 @@ void setup() {
 }
 
 void loop() {
-#if USE_INDEX_POLLING
-  bool inserted = lastReadyState == HIGH;
-#else
-  bool inserted = floppy.get_write_protect() == WRITE_FLAG;
-#endif
+  bool inserted = getInserted();
   if (newDisk && inserted) {
     readDisk();
   } else if (!newDisk && !inserted) {
     newDisk = true;
     lastCommand = "";
   }
+  indexPoll();
+  if (lastCommand.length()) {
+    Serial.print(lastCommand);
+    Serial.flush();
+  }
+  delay(200);
+}
+
+inline bool getInserted() {
+#if USE_INDEX_POLLING
+  return lastReadyState == HIGH;
+#else
+  return floppy.get_write_protect() == WRITE_FLAG;
+#endif
+}
+
+inline void indexPoll() {
 #if USE_INDEX_POLLING
   if (readyPinChanged) {
     readyPinChanged = false;
@@ -102,12 +117,6 @@ void loop() {
     indexTriggered = false;
   }
 #endif
-
-  if (lastCommand.length()) {
-    Serial.print(lastCommand);
-    Serial.flush();
-  }
-  delay(200);
 }
 
 void readDisk() {
