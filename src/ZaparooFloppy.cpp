@@ -1,7 +1,14 @@
+#include <Arduino.h>
 #include <SPI.h>
 #include <SdFat.h>
 #include <Adafruit_Floppy.h>
 #include "ZaparooFloppy.hpp"
+
+void setup();
+void loop();
+void readyPinTrigger();
+void indexPinTrigger();
+void parseZaparoo();
 
 #if defined(ADAFRUIT_FEATHER_M4_EXPRESS)
 #define DENSITY_PIN A1 // IDC 2
@@ -61,8 +68,9 @@ Adafruit_Floppy floppy(DENSITY_PIN, INDEX_PIN, SELECT_PIN,
                        PROT_PIN, READ_PIN, SIDE_PIN, READY_PIN);
 Adafruit_MFM_Floppy mfm_floppy(&floppy, DEFAULT_DISK_FORMAT);
 
-FatVolume fatfs;
 
+enum SystemState { WAITING_FOR_INDEX, WAITING_FOR_READY };
+FatVolume fatfs;
 File32 root;
 File32 file;
 bool newDisk = true;
@@ -72,7 +80,6 @@ volatile int lastReadyState = HIGH;
 volatile bool indexInterruptEnabled = true;
 volatile bool indexTriggered = false;
 volatile bool waitingForReadyAfterStep = false;
-enum SystemState { WAITING_FOR_INDEX, WAITING_FOR_READY };
 volatile SystemState currentState = WAITING_FOR_INDEX;
 
 void readyPinTrigger() {
