@@ -43,11 +43,11 @@ This setting controllers whether or not the drive will attempt to detect the flo
 ## Quick Start (For M4 Feather Express)
 After you've soldered your boards, connect the microcontroller to your computer and enter boolsel mode (on the M4, double click reset) (you should see a new drive connected). Download the latest .uf2 from the releases page and copy it to the microcontroller drive. Now that your board's firmware is flashed, you can connect everything to your system via the usb of your microcontroller. Configure Zaparoo to use [Simple Serial](https://wiki.zaparoo.org/Reader_Drivers#Simple_Serial) and insert a write-protected disk to launch a game.
 
-## Developer Setup (Test on Windows)
+## Developer Setup (Test on Windows And Arch)
 If you want to compile from source instead of the prebuilt firmware.
 1. Download and install Visual Studio Code
 2. Install the [Platformio Extension](https://platformio.org/)
 3. Open the project folder within Visual Studio Code.
-4. Once the project loads, use the bottom bar to switch to your preferred environment configuration. Without changing this platforio will build and upload every environment on the next step. 
-5. Build and upload the firmware (buttons are also found on the bottom bar).
+4. Once the project loads (first time takes a while), use the bottom bar to switch to your preferred environment configuration. Without changing this platforio will build and upload every environment on the next step. 
+5. Upload the firmware (buttons are also found on the bottom bar).
 6. Open a serial terminal to view the output.
