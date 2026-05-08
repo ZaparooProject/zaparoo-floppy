@@ -122,6 +122,7 @@ void readDisk() {
 #if RE_DETECT
   mfm_floppy.inserted(AUTODETECT);
 #endif
+  digitalWrite(MOTOR_PIN, 0); //Faster than waiting for index, still works for write-protected detection
   fatfs.begin(&mfm_floppy);
   newDisk = false;
   bool couldReadDisk = root.open("/");
