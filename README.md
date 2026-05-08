@@ -13,7 +13,7 @@ A microcontroller interfaces with the FeatherWing to connect a 34 pin floppy dri
 | firmware_no_redetect_write_polling_inverse.uf2     | No                 | Write Protect (Inverse)    |
 | firmware_redetect_index_polling.uf2                | Yes                | Index                      |
 | firmware_redetect_write_polling.uf2                | Yes                | Write Protect              |
-| firmware_redetect_write_polling_inverse.uf2        | Yes                | Write Protect (Invverse)   |
+| firmware_redetect_write_polling_inverse.uf2        | Yes                | Write Protect (Inverse)   |
 
 
 ## Why Poll Using Write Protection?
