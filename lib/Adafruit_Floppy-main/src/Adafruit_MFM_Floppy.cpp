@@ -383,7 +383,7 @@ bool Adafruit_MFM_Floppy::autodetect() {
         _flux,
         _n_flux,
         info.bit_time_ns / 1000.0f,
-        i == 0);
+        true);
 
     if (_debug_enabled) Serial.printf(" -> sectors found: %d\n", captured);
 

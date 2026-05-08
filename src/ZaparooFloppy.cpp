@@ -74,8 +74,6 @@ void setup() {
   lastReadyState = digitalRead(READY_PIN);
   attachInterrupt(digitalPinToInterrupt(READY_PIN), readyPinTrigger, CHANGE);
   attachInterrupt(digitalPinToInterrupt(INDEX_PIN), indexPinTrigger, RISING);
-#else
-  floppy.spin_motor(false);
 #endif
 }
 
@@ -86,6 +84,7 @@ void loop() {
   } else if (!newDisk && !inserted) {
     newDisk = true;
     lastCommand = "";
+    floppy.spin_motor(true);
   }
   indexPoll();
   if (lastCommand.length()) {
@@ -123,7 +122,6 @@ void readDisk() {
 #if RE_DETECT
   mfm_floppy.inserted(AUTODETECT);
 #endif
-  floppy.spin_motor(true);
   fatfs.begin(&mfm_floppy);
   newDisk = false;
   bool couldReadDisk = root.open("/");
@@ -146,27 +144,26 @@ void readDisk() {
 
 void parseZaparoo() {
   lastCommand = "";
+  
   while (file.openNext(&root, O_RDONLY)) {
     char name[25];
     file.getName(name, 25);
-    String filename(name);
-    file.close();
-    if (filename.equalsIgnoreCase("tapto.txt") || filename.equalsIgnoreCase("zaparoo.txt")) {
-      File32 dataFile = fatfs.open(filename, FILE_READ);
-      lastCommand.reserve(dataFile.size() + 10);
+    if (strcasecmp(name, "tapto.txt") == 0 || strcasecmp(name, "zaparoo.txt") == 0) {
+      lastCommand.reserve(file.size() + 10);
       lastCommand = "SCAN\t";
-      char buffer[128];
-      while (dataFile.available()) {
-        int bytesRead = dataFile.read(buffer, sizeof(buffer));
+      char buffer[513]; // Extra byte for null terminator
+      while (file.available()) {
+        int bytesRead = file.read(buffer, 512);
         if (bytesRead > 0) {
-          for (int i = 0; i < bytesRead; i++) {
-            lastCommand += buffer[i];
-          }
+          buffer[bytesRead] = '\0';
+          lastCommand += buffer;
         }
       }
-      dataFile.close();
+      file.close();
       lastCommand += "\n";
-      return;
+      break;
     }
+    
+    file.close();
   }
 }
